@@ -4,7 +4,7 @@
 }
 
 body {
-  background: url("./background.svg") center center / cover no-repeat;
+  background: url("/background.svg") center center / cover no-repeat;
 }
 
 .logo {
