@@ -1,0 +1,16 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+body {
+  background: url("./background.svg") center center / cover no-repeat;
+}
+
+.logo {
+  text-decoration: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
