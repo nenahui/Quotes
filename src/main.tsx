@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import './index.css';
+import { SnackbarProvider } from 'notistack';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       panelBackground={'translucent'}
     >
       <BrowserRouter>
+        <SnackbarProvider />
         <App />
       </BrowserRouter>
     </Theme>

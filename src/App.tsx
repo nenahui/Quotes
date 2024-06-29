@@ -11,6 +11,7 @@ export const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/quotes/:quoteId' element={<Home />} />
+        <Route path='quotes/:quoteId/edit' element={<NewQuote />} />
         <Route path='/new-quote' element={<NewQuote />} />
       </Routes>
     </Container>

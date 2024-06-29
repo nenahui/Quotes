@@ -10,6 +10,7 @@ import {
 } from '@radix-ui/themes';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { ApiQuote } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   quote: ApiQuote;
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export const QuoteCard: React.FC<Props> = ({ quote, onDelete }) => {
+  const navigate = useNavigate();
+
   return (
     <Card>
       <Box>
@@ -25,7 +28,10 @@ export const QuoteCard: React.FC<Props> = ({ quote, onDelete }) => {
             {quote.author}
           </Heading>
           <Flex gap={'5'}>
-            <Button variant={'ghost'}>
+            <Button
+              variant={'ghost'}
+              onClick={() => navigate(`/quotes/${quote.id}/edit`)}
+            >
               Edit
               <Pencil2Icon />
             </Button>

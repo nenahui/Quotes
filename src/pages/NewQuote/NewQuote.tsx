@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -6,27 +6,52 @@ import {
   Heading,
   Select,
   Separator,
+  Spinner,
   Text,
   TextArea,
   TextField,
 } from '@radix-ui/themes';
 import { MagicWandIcon, PersonIcon } from '@radix-ui/react-icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ApiQuote, Quote } from '../../types';
 import { axiosApi } from '../../axiosApi';
 import { faker } from '@faker-js/faker';
-
-const initialState: Quote = {
-  category: 'star-wars',
-  author: '',
-  quoteText: '',
-};
+import { enqueueSnackbar } from 'notistack';
 
 export const NewQuote = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [values, setValues] = useState<Quote>(initialState);
-
+  const [category, setCategory] = useState('star-wars');
+  const [values, setValues] = useState<Quote>({
+    category,
+    author: '',
+    quoteText: '',
+  });
+  const params = useParams();
   const navigate = useNavigate();
+
+  const fetchData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      if (params.quoteId) {
+        const response = await axiosApi.get<Quote>(
+          `quotes/${params.quoteId}.json`
+        );
+        if (response.data) {
+          setValues(response.data);
+          setCategory(response.data.category);
+        }
+      }
+    } catch (error) {
+      enqueueSnackbar({ variant: 'error', message: 'Something went wrong!' });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [params.quoteId]);
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
 
   const onFieldChange = (
     event: React.ChangeEvent<
@@ -34,7 +59,12 @@ export const NewQuote = () => {
     >
   ) => {
     const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
+    setValues((prevValues) => ({ ...prevValues, [name]: value }));
+  };
+
+  const onCategoryChange = (value: string) => {
+    setCategory(value);
+    setValues((prevState) => ({ ...prevState, category: value }));
   };
 
   const onFormSubmit = async (event: React.FormEvent) => {
@@ -42,17 +72,25 @@ export const NewQuote = () => {
     setIsLoading(true);
 
     try {
-      await axiosApi.post<ApiQuote>('quotes.json', values);
+      if (params.quoteId) {
+        await axiosApi.put(`quotes/${params.quoteId}.json`, values);
+      } else {
+        await axiosApi.post<ApiQuote>('quotes.json', values);
+      }
     } catch (error) {
-      console.log(error);
+      enqueueSnackbar({ variant: 'error', message: 'Something went wrong!' });
     } finally {
-      setValues(initialState);
+      setValues({
+        category: '',
+        author: '',
+        quoteText: '',
+      });
       setIsLoading(false);
       navigate('/');
     }
   };
 
-  const randomCategory = () => {
+  const randomCategories = () => {
     const categories = [
       'star-wars',
       'famous-people',
@@ -65,14 +103,18 @@ export const NewQuote = () => {
   };
 
   const randomValues = () => {
+    const randomCategory = randomCategories();
     setValues({
       author: faker.person.fullName(),
       quoteText: faker.lorem.paragraph(),
-      category: randomCategory(),
+      category: randomCategory,
     });
+    setCategory(randomCategory);
   };
 
-  return (
+  return isLoading ? (
+    <Spinner className={'spinner'} />
+  ) : (
     <form onSubmit={onFormSubmit}>
       <Card>
         <Flex justify={'between'} align={'center'} pr={'2'}>
@@ -81,11 +123,7 @@ export const NewQuote = () => {
           </Heading>
 
           <Flex gap={'5'} align={'center'}>
-            <Button
-              variant={'ghost'}
-              type={'button'}
-              onClick={() => randomValues()}
-            >
+            <Button variant={'ghost'} type={'button'} onClick={randomValues}>
               Random values
               <MagicWandIcon />
             </Button>
@@ -105,7 +143,12 @@ export const NewQuote = () => {
           <Text color={'gray'} size={'2'}>
             Category
           </Text>
-          <Select.Root name={'category'} value={values.category} required>
+          <Select.Root
+            name='category'
+            value={category}
+            onValueChange={onCategoryChange}
+            required
+          >
             <Select.Trigger />
             <Select.Content>
               <Select.Group>
@@ -128,7 +171,7 @@ export const NewQuote = () => {
           mb={'3'}
           name={'author'}
           value={values.author}
-          onChange={onFormSubmit}
+          onChange={onFieldChange}
           required
         >
           <TextField.Slot>

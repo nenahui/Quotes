@@ -1,10 +1,11 @@
 import { Sidebar } from '../../components/Sidebar/Sidebar';
 import { Flex, Heading, Spinner, Text } from '@radix-ui/themes';
 import { QuoteCard } from '../../components/QuoteCard/QuoteCard';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { ApiQuote, ApiQuotes } from '../../types';
 import { axiosApi } from '../../axiosApi';
+import { enqueueSnackbar } from 'notistack';
 
 export const Home = () => {
   const params = useParams();
@@ -18,6 +19,8 @@ export const Home = () => {
   ];
   const [quotes, setQuotes] = useState<ApiQuote[] | null>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentCategoryTitle, setCurrentCategoryTitle] = useState('');
+  const navigate = useNavigate();
 
   const fetchQuotes = useCallback(async () => {
     try {
@@ -40,8 +43,12 @@ export const Home = () => {
 
         setQuotes(quotes);
       }
+
+      const currentCategory =
+        data.find((category) => category.id === params.quoteId) || data[0];
+      setCurrentCategoryTitle(currentCategory.title);
     } catch (error) {
-      console.error(error);
+      enqueueSnackbar({ variant: 'error', message: 'Something went wrong!' });
       throw error;
     } finally {
       setIsLoading(false);
@@ -51,9 +58,10 @@ export const Home = () => {
   const deleteQuote = useCallback(
     async (id: string) => {
       await axiosApi.delete(`quotes/${id}.json`);
+      navigate('/');
       void fetchQuotes();
     },
-    [fetchQuotes]
+    [fetchQuotes, navigate]
   );
 
   useEffect(() => {
@@ -71,14 +79,13 @@ export const Home = () => {
           </Flex>
         </aside>
         {isLoading ? (
-          <Spinner className={'spinner'} />
+          <Flex width={'75%'} justify={'center'} align={'center'}>
+            <Spinner className={'spinner'} />
+          </Flex>
         ) : (
           <Flex width={'75%'} direction={'column'} gap={'2'}>
             <Heading weight={'medium'} size={'4'}>
-              {!isLoading &&
-                data.map(
-                  (category) => category.id === params.quoteId && category.title
-                )}
+              {currentCategoryTitle}
             </Heading>
             {quotes?.length === 0 ? (
               <Text>The list of quotes is empty</Text>
