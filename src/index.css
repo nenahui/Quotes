@@ -24,4 +24,5 @@ body {
   left: 0;
   right: 0;
   background-color: var(--accent-indicator);
+  border-radius: 50px;
 }

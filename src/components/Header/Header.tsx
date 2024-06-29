@@ -1,5 +1,6 @@
-import { Flex, Heading, TabNav } from '@radix-ui/themes';
+import { Flex, Heading, TabNav, Text } from '@radix-ui/themes';
 import { Link, NavLink } from 'react-router-dom';
+import { HomeIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 
 export const Header = () => {
   return (
@@ -12,10 +13,16 @@ export const Header = () => {
         <nav>
           <TabNav.Root>
             <TabNav.Link asChild>
-              <NavLink to={'/'}>Home</NavLink>
+              <NavLink to={'/'}>
+                <HomeIcon />
+                <Text ml={'1'}>Home</Text>
+              </NavLink>
             </TabNav.Link>
             <TabNav.Link asChild>
-              <NavLink to={'/new-quote'}>New Quote</NavLink>
+              <NavLink to={'/new-quote'}>
+                <PlusCircledIcon />
+                <Text ml={'1'}>New Quote</Text>
+              </NavLink>
             </TabNav.Link>
           </TabNav.Root>
         </nav>
