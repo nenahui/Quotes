@@ -11,7 +11,7 @@ import {
   TextArea,
   TextField,
 } from '@radix-ui/themes';
-import { MagicWandIcon, PersonIcon } from '@radix-ui/react-icons';
+import { Cross2Icon, MagicWandIcon, PersonIcon } from '@radix-ui/react-icons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ApiQuote, Quote } from '../../types';
 import { axiosApi } from '../../axiosApi';
@@ -131,7 +131,7 @@ export const NewQuote = () => {
             <Link to={'/'}>
               <Button variant={'ghost'} color={'red'} type={'button'}>
                 Cancel
-                <MagicWandIcon />
+                <Cross2Icon />
               </Button>
             </Link>
           </Flex>
