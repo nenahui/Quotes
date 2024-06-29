@@ -9,8 +9,19 @@ body {
 
 .logo {
   text-decoration: none;
+  color: inherit;
 }
 
 .pointer {
   cursor: pointer;
+}
+
+.active::after {
+  content: '';
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--accent-indicator);
 }
