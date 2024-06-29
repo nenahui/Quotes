@@ -5,7 +5,7 @@ import { HomeIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 export const Header = () => {
   return (
     <header>
-      <Flex justify={'between'} align={'center'}>
+      <Flex justify={'between'} align={'center'} mb={'3'}>
         <Link to={'/'} className={'logo'}>
           <Heading size={'5'}>Quotes</Heading>
         </Link>

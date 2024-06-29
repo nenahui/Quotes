@@ -6,10 +6,11 @@ import { Header } from './components/Header/Header';
 
 export const App = () => {
   return (
-    <Container size={'2'}>
+    <Container size={'3'}>
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/quotes/:quoteId' element={<Home />} />
         <Route path='/new-quote' element={<NewQuote />} />
       </Routes>
     </Container>

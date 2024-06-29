@@ -17,7 +17,7 @@ import { axiosApi } from '../../axiosApi';
 import { faker } from '@faker-js/faker';
 
 const initialState: Quote = {
-  category: 'none',
+  category: 'star-wars',
   author: '',
   quoteText: '',
 };
@@ -74,7 +74,7 @@ export const NewQuote = () => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <Card mt={'3'}>
+      <Card>
         <Flex justify={'between'} align={'center'} pr={'2'}>
           <Heading weight={'medium'} size={'4'}>
             Create a new quote
@@ -105,12 +105,11 @@ export const NewQuote = () => {
           <Text color={'gray'} size={'2'}>
             Category
           </Text>
-          <Select.Root name={'category'} value={values.category}>
+          <Select.Root name={'category'} value={values.category} required>
             <Select.Trigger />
             <Select.Content>
               <Select.Group>
                 <Select.Label>Category</Select.Label>
-                <Select.Item value='none'>Select</Select.Item>
                 <Select.Item value='star-wars'>Star Wars</Select.Item>
                 <Select.Item value='famous-people'>Famous people</Select.Item>
                 <Select.Item value='saying'>Saying</Select.Item>
@@ -130,6 +129,7 @@ export const NewQuote = () => {
           name={'author'}
           value={values.author}
           onChange={onFormSubmit}
+          required
         >
           <TextField.Slot>
             <PersonIcon height='16' width='16' />
